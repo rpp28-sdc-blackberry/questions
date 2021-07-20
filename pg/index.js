@@ -29,7 +29,7 @@ let getQuestions = (product_id, offset, limit) => {
       console.log('DB ERROR GETTING ALL QUESTIONS', err);
       throw err;
     })
-}
+};
 
 let getAnswers = (question_id, offset, limit, answersQuery) => {
   let values;
@@ -70,10 +70,30 @@ let getPhotos = (answer_id) => {
       console.log('DB ERROR GETTING ALL PHOTOS', err);
       throw err;
     })
-}
+};
+
+let addQuestion = ({ product_id, body, name, email }) => {
+  if (typeof product_id !== 'number' || typeof body !== 'string' || typeof name !== 'string' || typeof email !== 'string') {
+    throw 'BODY NEEDS TO BE IN CORRECT FORMAT';
+  }
+
+  let addQuestionQuery = `INSERT INTO questions (product_id, question_body, asker_name, asker_email) VALUES($1, $2, $3, $4) RETURNING *`;
+  let values = [product_id, body, name, email];
+
+  return client.query(addQuestionQuery, values)
+    .then((addedQ) => {
+      // console.log('DB POSTED QUESTION', addedQ.rows)
+      return addedQ.rows;
+    })
+    .catch((err) => {
+      console.log('DB ERROR POSTING Q', err);
+      throw err;
+    })
+};
 
 module.exports.getQuestions = getQuestions;
 module.exports.getAnswers = getAnswers;
+module.exports.addQuestion = addQuestion;
 
 //JOIN answers and photos table using a left join.
 // client.query(`SELECT answers.answer_id, answers.question_id, answers.body, answers.answerer_name, answers.answerer_email, answers.helpfulness, photos.id, photos.answer_id, photos.url FROM answers LEFT JOIN photos ON answers.answer_id = photos.answer_id OFFSET 0 LIMIT 5`)

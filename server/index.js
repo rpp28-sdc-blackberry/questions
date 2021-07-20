@@ -32,7 +32,8 @@ app.get(`/qa/questions`, (req, res) => {
   return db.getQuestions(product_id, offset, count)
     .then((questions) => {
       console.log('SERVER ALL QUESTIONS', questions);
-      let requiredQuestions = questions.map((question) => {
+      let filteredQuestions = questions.filter((question) => !question.reported)
+      let requiredQuestions = filteredQuestions.map((question) => {
         let requiredAnswers = {};
         let answers = question.answers.forEach((answer) => {
           let photos = answer.photos;
@@ -58,11 +59,12 @@ app.get(`/qa/questions`, (req, res) => {
           answers: requiredAnswers
         }
         return newQuestion;
-      })
+      });
+
       let result = {
         product_id,
         results: requiredQuestions
-      }
+      };
       res.status(200).send(result);
     })
     .catch((err) => {
@@ -94,7 +96,8 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
   return db.getAnswers(question_id, offset, count)
     .then((answers) => {
       console.log('SERVER ALL ANSWERS', answers);
-      let requiredAnswers = answers.map(({ answer_id, body, date, answerer_name, helpfulness, photos }) => {
+      let filteredAnswers = answers.filter((answer) => !answer.reported);
+      let requiredAnswers = filteredAnswers.map(({ answer_id, body, date, answerer_name, helpfulness, photos }) => {
         let newAnswer = {
           answer_id,
           body,
@@ -119,6 +122,23 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
       res.status(500).send(err);
     });
 });
+
+//------
+//ADD A QUESTION
+
+app.post(`/qa/questions`, (req, res) => {
+  console.log('req body', req.body);
+
+  return db.addQuestion(req.body)
+    .then((savedQ) => {
+      console.log('SERVER: ADDED Q', savedQ)
+      res.status(201).send('Created')
+    })
+    .catch((err) => {
+      console.log('SERVER ERROR POSTING QUESTION', err);
+      res.status(500).send(err);
+    })
+})
 
 const port = 3000;
 app.listen(port, () => {
