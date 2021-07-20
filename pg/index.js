@@ -119,13 +119,45 @@ let addPhoto = (answer_id, url) => {
       console.log('DB ERROR POSTING PHOTO', err);
       throw err;
     });
-}
+};
+
+let updateQuestionHelpfulness = (question_id) => {
+  let updateQHelpfulnessQuery = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id = $1 RETURNING *`;
+  let values = [question_id];
+
+  return client.query(updateQHelpfulnessQuery, values)
+    .then((updatedQ) => {
+      // console.log('DB UPDATE Q HELPFULNESS', updatedQ.rows)
+      return updatedQ.rows[0];
+    })
+    .catch((err) => {
+      console.log('DB ERROR UPDATING Q HELPFULNESS', err);
+      throw err;
+    });
+};
+
+let reportQuestion = (question_id) => {
+  let reportQuestionQuery = `UPDATE questions SET reported = $1 WHERE question_id = $2 RETURNING *`;
+  let values = [true, question_id];
+
+  return client.query(reportQuestionQuery, values)
+    .then((reportedQ) => {
+      console.log('DB REPORTED Q SUCCESSFULLY', reportedQ.rows);
+      return reportedQ.rows[0];
+    })
+    .catch((err) => {
+      console.log('DB ERROR REPORTING Q', err);
+      throw err;
+    });
+};
 
 module.exports.getQuestions = getQuestions;
 module.exports.getAnswers = getAnswers;
 module.exports.addQuestion = addQuestion;
 module.exports.addAnswer = addAnswer;
 module.exports.addPhoto = addPhoto;
+module.exports.updateQuestionHelpfulness = updateQuestionHelpfulness;
+module.exports.reportQuestion = reportQuestion;
 
 //JOIN answers and photos table using a left join.
 // client.query(`SELECT answers.answer_id, answers.question_id, answers.body, answers.answerer_name, answers.answerer_email, answers.helpfulness, photos.id, photos.answer_id, photos.url FROM answers LEFT JOIN photos ON answers.answer_id = photos.answer_id OFFSET 0 LIMIT 5`)

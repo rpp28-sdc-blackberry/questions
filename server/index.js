@@ -145,7 +145,7 @@ app.post(`/qa/questions`, (req, res) => {
 
 app.post(`/qa/questions/:question_id/answers`, (req, res) => {
   // console.log('req params', req.params, 'req body', req.body);
-  let question_id = req.params.question_id;
+  let question_id = Number(req.params.question_id);
   let { body, name, email, photos } = req.body;
   if (typeof body !== 'string' || typeof name !== 'string' || typeof email !== 'string' || !Array.isArray(photos)) {
     throw `BODY NEEDS TO BE IN THE CORRECT FORMAT`;
@@ -173,6 +173,41 @@ app.post(`/qa/questions/:question_id/answers`, (req, res) => {
       res.status(500).send(err);
     });
 });
+
+//------
+//INCREASE QUESTION HELPFULNESS
+
+app.put(`/qa/questions/:question_id/helpful`, (req, res) => {
+  // console.log('req params', req.params);
+  let question_id = Number(req.params.question_id);
+
+  return db.updateQuestionHelpfulness(question_id)
+    .then((updatedQ) => {
+      console.log('SERVER UPDATED Q HELPFULNESS', updatedQ)
+      res.sendStatus(204)
+    })
+    .catch((err) => {
+      console.log('SERVER ERROR UPDATING Q HELPFULNESS', err);
+      res.status(500).send(err);
+    });
+});
+
+//------
+//REPORT QUESTION
+
+app.put(`/qa/questions/:question_id/report`, (req, res) => {
+  let question_id = Number(req.params.question_id);
+
+  return db.reportQuestion(question_id)
+    .then((reportedQ) => {
+      console.log('SERVER REPORTED Q SUCCESSFULLY', reportedQ)
+      res.sendStatus(204)
+    })
+    .catch((err) => {
+      console.log('SERVER ERROR REPORTING Q', err);
+      res.status(500).send(err);
+    });
+})
 
 const port = 3000;
 app.listen(port, () => {
