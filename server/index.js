@@ -28,9 +28,11 @@ app.get(`/qa/questions`, (req, res) => {
   return db.getQuestions(product_id, offset, count)
     .then((questions) => {
       console.log('SERVER ALL QUESTIONS', questions);
+      res.status(200).send(questions);
     })
     .catch((err) => {
-      console.log('ERROR IN SERVER GETTING ALL QUESTIONS', err)
+      console.log('SERVER ERROR IN SERVER GETTING ALL QUESTIONS', err)
+      res.status(500).send(err);
     });
 });
 
@@ -53,9 +55,11 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
   return db.getAnswers(question_id, offset, count)
     .then((answers) => {
       console.log('SERVER ALL ANSWERS', answers);
+      res.status(200).send(answers);
     })
     .catch((err) => {
-      console.log('ERROR IN SERVER GETTING ALL ANSWERS', err)
+      console.log('SERVER ERROR IN SERVER GETTING ALL ANSWERS', err)
+      res.status(500).send(err);
     });
 });
 

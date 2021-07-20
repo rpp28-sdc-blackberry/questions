@@ -13,18 +13,32 @@ let getQuestions = (product_id, offset, limit) => {
   let values = [product_id, offset, limit];
 
   return client.query(questionsQuery, values)
-    .then((res) => {
+    .then(async (res) => {
       // console.log('DB ALL QUESTIONS', res.rows);
-      return res.rows;
+      let questions = res.rows;
+
+      for (let question of questions) {
+        let answersQuery = `SELECT * FROM answers WHERE question_id = $1 ORDER BY answer_id`
+        let answers = await getAnswers(question.question_id, null, null, answersQuery);
+        question.answers = answers;
+      }
+      // console.log('DB QUESTIONS AFTER ADDING ALL ANSWERS', questions);
+      return questions;
     })
     .catch((err) => {
       console.log('DB ERROR GETTING ALL QUESTIONS', err);
+      throw err;
     })
 }
 
-let getAnswers = (question_id, offset, limit) => {
-  let answersQuery = `SELECT * FROM answers WHERE question_id = $1 ORDER BY answer_id ASC OFFSET $2 LIMIT $3`;
-  let values = [question_id, offset, limit];
+let getAnswers = (question_id, offset, limit, answersQuery) => {
+  let values;
+  if (answersQuery === undefined) {
+    answersQuery = `SELECT * FROM answers WHERE question_id = $1 ORDER BY answer_id ASC OFFSET $2 LIMIT $3`;
+    values = [question_id, offset, limit];
+  } else {
+    values = [question_id];
+  }
 
   return client.query(answersQuery, values)
     .then(async (res) => {
@@ -36,11 +50,12 @@ let getAnswers = (question_id, offset, limit) => {
         answer.photos = photos;
       }
 
-      // console.log('DB ANSWERS AFTER ADDING PHOTOS', answers);
+      // console.log('DB ANSWERS AFTER ADDING ALL PHOTOS', answers);
       return answers;
     })
     .catch((err) => {
       console.log('DB ERROR GETTING ALL ANSWERS', err);
+      throw err;
     })
 }
 
@@ -48,11 +63,12 @@ let getPhotos = (answer_id) => {
   let photosQuery = `SELECT id, url FROM photos WHERE answer_id = ${answer_id} ORDER BY id ASC`;
   return client.query(photosQuery)
     .then((res) => {
-      console.log('DB ALL PHOTOS', res.rows);
+      // console.log('DB ALL PHOTOS', res.rows);
       return res.rows;
     })
     .catch((err) => {
       console.log('DB ERROR GETTING ALL PHOTOS', err);
+      throw err;
     })
 }
 
