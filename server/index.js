@@ -16,11 +16,11 @@ app.use(cors());
 app.get(`/qa/questions`, (req, res) => {
   // console.log(req.query)
   let { product_id, page, count } = req.query;
-  if (page === undefined) {
-    page = 0;
-  }
+  page = Number(page) || 1;
   if (count === undefined) {
-    count = 5;
+    count = 5
+  } else {
+    count = Number(count);
   }
 
   let offset = (page - 1) * count;
@@ -41,12 +41,13 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
   // console.log('req params', req.params);
   let question_id = req.params.question_id;
   let { page, count } = req.query;
-  if (page === undefined) {
-    page = 0;
-  }
+  page = Number(page) || 1;
   if (count === undefined) {
-    count = 5;
+    count = 5
+  } else {
+    count = Number(count);
   }
+
   let offset = (page - 1) * count;
 
   return db.getAnswers(question_id, offset, count)
