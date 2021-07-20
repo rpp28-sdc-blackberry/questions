@@ -16,6 +16,10 @@ app.use(cors());
 app.get(`/qa/questions`, (req, res) => {
   // console.log(req.query)
   let { product_id, page, count } = req.query;
+  if (Number(page) <= 0) {
+    throw 'Page should be greater than 0';
+  }
+
   page = Number(page) || 1;
   if (count === undefined) {
     count = 5
@@ -31,7 +35,7 @@ app.get(`/qa/questions`, (req, res) => {
       res.status(200).send(questions);
     })
     .catch((err) => {
-      console.log('SERVER ERROR IN SERVER GETTING ALL QUESTIONS', err)
+      console.log('SERVER ERROR GETTING ALL QUESTIONS', err)
       res.status(500).send(err);
     });
 });
@@ -43,6 +47,10 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
   // console.log('req params', req.params);
   let question_id = req.params.question_id;
   let { page, count } = req.query;
+  if (Number(page) <= 0) {
+    throw 'Page should be greater than 0';
+  }
+
   page = Number(page) || 1;
   if (count === undefined) {
     count = 5
@@ -58,7 +66,7 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
       res.status(200).send(answers);
     })
     .catch((err) => {
-      console.log('SERVER ERROR IN SERVER GETTING ALL ANSWERS', err)
+      console.log('SERVER ERROR GETTING ALL ANSWERS', err)
       res.status(500).send(err);
     });
 });
