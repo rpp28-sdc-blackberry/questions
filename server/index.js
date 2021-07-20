@@ -131,14 +131,48 @@ app.post(`/qa/questions`, (req, res) => {
 
   return db.addQuestion(req.body)
     .then((savedQ) => {
-      console.log('SERVER: ADDED Q', savedQ)
-      res.status(201).send('Created')
+      console.log('SERVER: ADDED Q', savedQ);
+      res.status(201).send('Created');
     })
     .catch((err) => {
       console.log('SERVER ERROR POSTING QUESTION', err);
       res.status(500).send(err);
+    });
+});
+
+//------
+//ADD AN ANSWER
+
+app.post(`/qa/questions/:question_id/answers`, (req, res) => {
+  // console.log('req params', req.params, 'req body', req.body);
+  let question_id = req.params.question_id;
+  let { body, name, email, photos } = req.body;
+  if (typeof body !== 'string' || typeof name !== 'string' || typeof email !== 'string' || !Array.isArray(photos)) {
+    throw `BODY NEEDS TO BE IN THE CORRECT FORMAT`;
+  }
+  return db.addAnswer(question_id, body, name, email)
+    .then((savedA) => {
+      console.log('SERVER: ADDED ANSWER', savedA);
+      if (photos.length === 0) {
+        return res.status(201).send('Created');
+      }
+
+      let promisesPhotos = photos.map((photo) => db.addPhoto(savedA.answer_id, photo));
+      return Promise.all(promisesPhotos)
+        .then((savedPhotos) => {
+          console.log('SERVER: ADDED PHOTOS', savedPhotos);
+          res.status(201).send('Created');
+        })
+        .catch((err) => {
+          console.log('SERVER ERROR POSTING PHOTOS', err);
+          res.status(500).send(err);
+        })
     })
-})
+    .catch((err) => {
+      console.log('SERVER ERROR POSTING ANSWER', err);
+      res.status(500).send(err);
+    });
+});
 
 const port = 3000;
 app.listen(port, () => {

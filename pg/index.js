@@ -91,9 +91,41 @@ let addQuestion = ({ product_id, body, name, email }) => {
     })
 };
 
+let addAnswer = (question_id, body, name, email) => {
+  let addAnswerQuery = `INSERT INTO answers (question_id, body, answerer_name, answerer_email) VALUES($1, $2, $3, $4) RETURNING *`;
+  let values = [question_id, body, name, email];
+
+  return client.query(addAnswerQuery, values)
+    .then((addedAnswer) => {
+      console.log('DB POSTED ANSWER', addedAnswer.rows)
+      return addedAnswer.rows[0];
+    })
+    .catch((err) => {
+      console.log('DB ERROR POSTING ANSWER', err);
+      throw err;
+    });
+}
+
+let addPhoto = (answer_id, url) => {
+  let addPhotoQuery = `INSERT INTO photos (answer_id, url) VALUES($1, $2) RETURNING *`;
+  let values = [answer_id, url];
+
+  return client.query(addPhotoQuery, values)
+    .then((addedPhoto) => {
+      // console.log('DB POSTED PHOTO', addedPhoto.rows);
+      return addedPhoto.rows[0];
+    })
+    .catch((err) => {
+      console.log('DB ERROR POSTING PHOTO', err);
+      throw err;
+    });
+}
+
 module.exports.getQuestions = getQuestions;
 module.exports.getAnswers = getAnswers;
 module.exports.addQuestion = addQuestion;
+module.exports.addAnswer = addAnswer;
+module.exports.addPhoto = addPhoto;
 
 //JOIN answers and photos table using a left join.
 // client.query(`SELECT answers.answer_id, answers.question_id, answers.body, answers.answerer_name, answers.answerer_email, answers.helpfulness, photos.id, photos.answer_id, photos.url FROM answers LEFT JOIN photos ON answers.answer_id = photos.answer_id OFFSET 0 LIMIT 5`)
