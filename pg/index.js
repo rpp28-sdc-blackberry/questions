@@ -2,7 +2,7 @@ const { Client } = require('pg');
 const client = new Client({
   database: 'qna',
 });
-console.log('env', process.env.NODE_ENV)
+console.log('DB env', process.env.NODE_ENV)
 
 if (process.env.NODE_ENV === 'development') {
   client.connect()
