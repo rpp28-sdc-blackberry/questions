@@ -181,6 +181,7 @@ let reportAnswer = (answer_id) => {
     });
 }
 
+module.exports.client = client;
 module.exports.getQuestions = getQuestions;
 module.exports.getAnswers = getAnswers;
 module.exports.addQuestion = addQuestion;
