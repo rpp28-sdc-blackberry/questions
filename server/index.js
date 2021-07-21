@@ -32,10 +32,11 @@ app.get(`/qa/questions`, (req, res) => {
   return db.getQuestions(product_id, offset, count)
     .then((questions) => {
       console.log('SERVER ALL QUESTIONS', questions);
-      let filteredQuestions = questions.filter((question) => !question.reported)
+      let filteredQuestions = questions.filter((question) => !question.reported);
       let requiredQuestions = filteredQuestions.map((question) => {
         let requiredAnswers = {};
-        let answers = question.answers.forEach((answer) => {
+        let filteredAnswers = question.answers.filter((answer) => !answer.reported);
+        let answers = filteredAnswers.forEach((answer) => {
           let photos = answer.photos;
           let requiredPhotos = photos.map((photo) => photo.url);
           let newAnswer = {
@@ -208,6 +209,40 @@ app.put(`/qa/questions/:question_id/report`, (req, res) => {
       res.status(500).send(err);
     });
 })
+
+//INCREASE ANSWER HELPFULNESS
+
+app.put(`/qa/answers/:answer_id/helpful`, (req, res) => {
+  // console.log('req params', req.params);
+  let answer_id = Number(req.params.answer_id);
+
+  return db.updateAnswerHelpfulness(answer_id)
+    .then((updatedA) => {
+      console.log('SERVER UPDATED ANSWER HELPFULNESS', updatedA)
+      res.sendStatus(204)
+    })
+    .catch((err) => {
+      console.log('SERVER ERROR UPDATING ANSWER HELPFULNESS', err);
+      res.status(500).send(err);
+    });
+});
+
+//REPORT AN ANSWER
+
+app.put(`/qa/answers/:answer_id/report`, (req, res) => {
+  let answer_id = Number(req.params.answer_id);
+
+  return db.reportAnswer(answer_id)
+    .then((reportedAnswer) => {
+      console.log('SERVER REPORTED ANSWER SUCCESSFULLY', reportedAnswer)
+      res.sendStatus(204)
+    })
+    .catch((err) => {
+      console.log('SERVER ERROR REPORTING ANSWER', err);
+      res.status(500).send(err);
+    });
+});
+
 
 const port = 3000;
 app.listen(port, () => {

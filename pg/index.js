@@ -142,7 +142,7 @@ let reportQuestion = (question_id) => {
 
   return client.query(reportQuestionQuery, values)
     .then((reportedQ) => {
-      console.log('DB REPORTED Q SUCCESSFULLY', reportedQ.rows);
+      // console.log('DB REPORTED Q SUCCESSFULLY', reportedQ.rows);
       return reportedQ.rows[0];
     })
     .catch((err) => {
@@ -151,6 +151,36 @@ let reportQuestion = (question_id) => {
     });
 };
 
+let updateAnswerHelpfulness = (answer_id) => {
+  let updateAnswerHelpfulnessQuery = `UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id = $1 RETURNING *`;
+  let values = [answer_id];
+
+  return client.query(updateAnswerHelpfulnessQuery, values)
+    .then((updatedA) => {
+      // console.log('DB UPDATE ANSWER HELPFULNESS', updatedA.rows)
+      return updatedA.rows[0];
+    })
+    .catch((err) => {
+      console.log('DB ERROR UPDATING ANSWER HELPFULNESS', err);
+      throw err;
+    });
+}
+
+let reportAnswer = (answer_id) => {
+  let reportAnswerQuery = `UPDATE answers SET reported = $1 WHERE answer_id = $2 RETURNING *`;
+  let values = [true, answer_id];
+
+  return client.query(reportAnswerQuery, values)
+    .then((reportedA) => {
+      // console.log('DB REPORTED ANSWER SUCCESSFULLY', reportedA.rows);
+      return reportedA.rows[0];
+    })
+    .catch((err) => {
+      console.log('DB ERROR REPORTING ANSWER', err);
+      throw err;
+    });
+}
+
 module.exports.getQuestions = getQuestions;
 module.exports.getAnswers = getAnswers;
 module.exports.addQuestion = addQuestion;
@@ -158,6 +188,8 @@ module.exports.addAnswer = addAnswer;
 module.exports.addPhoto = addPhoto;
 module.exports.updateQuestionHelpfulness = updateQuestionHelpfulness;
 module.exports.reportQuestion = reportQuestion;
+module.exports.updateAnswerHelpfulness = updateAnswerHelpfulness;
+module.exports.reportAnswer = reportAnswer;
 
 //JOIN answers and photos table using a left join.
 // client.query(`SELECT answers.answer_id, answers.question_id, answers.body, answers.answerer_name, answers.answerer_email, answers.helpfulness, photos.id, photos.answer_id, photos.url FROM answers LEFT JOIN photos ON answers.answer_id = photos.answer_id OFFSET 0 LIMIT 5`)
