@@ -25,9 +25,9 @@ jobs:
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
       - image: circleci/postgres:9.6-alpine
-        environment:
-          POSTGRES_USER: circleci
-          POSTGRES_DB: circleci
+        # environment:
+        #   POSTGRES_USER: circleci
+        #   POSTGRES_DB: circleci
     steps:
       # Checkout the code as the first step.
       - checkout
