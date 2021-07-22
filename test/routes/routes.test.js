@@ -32,9 +32,15 @@ describe('GET/dummy', () => {
 describe('GET/qa/questions', () => {
   it('should respond with 200 status code and all questions', async () => {
     let response = await request.get('/qa/questions?product_id=1&count=1')
-    // console.log('RESPONSE', response.body.results[0])
+    let questions = response.body.results;
+    console.log('QUESTIONS', questions[0].answers['1'])
     expect(response.statusCode).toBe(200);
     expect(response.body.product_id).toEqual('1');
-    expect(response.body.results.length).toEqual(1);
-  }, 1000 * 30);
+    expect(questions.length).toEqual(1);
+    expect(questions[0].question_id).toEqual(1);
+
+    let answer = questions[0].answers['1'];
+    expect(answer.id).toEqual(1);
+    expect(answer.photos.length).toEqual(3)
+  });
 });
