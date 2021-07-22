@@ -29,11 +29,11 @@ describe('GET/dummy', () => {
   });
 });
 
-describe('GET/qa/questions', () => {
+describe('GET questions', () => {
   it('should respond with 200 status code and all questions', async () => {
-    let response = await request.get('/qa/questions?product_id=1&count=1')
+    let response = await request.get('/qa/questions').query({product_id: 1, count: 4});
     let questions = response.body.results;
-    console.log('QUESTIONS', questions[0].answers['1'])
+    // console.log('QUESTIONS', questions[0].answers['1'])
 
     expect(response.statusCode).toBe(200);
     expect(response.body.product_id).toEqual('1');
@@ -47,11 +47,11 @@ describe('GET/qa/questions', () => {
   });
 });
 
-describe('GET/qa/questions/:question_id/answers', () => {
+describe('GET answers', () => {
   it('should respond with 200 status code and all questions', async () => {
     let response = await request.get('/qa/questions/1/answers')
     let answers = response.body.results;
-    console.log('ANSWERS', answers[0]);
+    // console.log('ANSWERS', answers[0]);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.question).toEqual('1');
@@ -61,5 +61,25 @@ describe('GET/qa/questions/:question_id/answers', () => {
 
     let photos = answers[0].photos;
     expect(photos.length).toEqual(3);
+  });
+});
+
+describe('POST question', () => {
+  it('should respond with 201 status code and should add a question', async () => {
+    let questionBody = {
+      name: 'Q 2',
+      body: 'Q2',
+      email: 'q2@g.com',
+      product_id: 1
+    }
+    let postResponse = await request.post('/qa/questions').send(questionBody)
+    expect(postResponse.statusCode).toEqual(201);
+
+    let getResponse = await request.get('/qa/questions').query({product_id: 1, count: 10});
+    let questions = getResponse.body.results;
+
+    console.log('NEW QUESTIONS', questions)
+    expect(questions.length).toEqual(2);
+    expect(questions[1].question_id).toEqual(3);
   });
 });
