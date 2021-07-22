@@ -14,17 +14,19 @@ const db = require('../../pg/index.js');
 afterAll(async () => {
   await db.client.end();
 });
+
 describe('GET/dummy', () => {
   it('responds with 200 status code', (done) => {
     request.get('/dummy')
       .expect(200, done);
   });
 });
-// describe('GET/qa/questions', () => {
-//   it('responds with 200 status code', async () => {
-//     let response = await request.get('/qa/questions?product_id=1&count=1')
-//     console.log('RESPONSE', response.body)
-//     expect(response.statusCode).toBe(200);
-//     expect(response.body.product_id).toEqual('1')
-//   }, 1000 * 30);
-// });
+
+describe('GET/qa/questions', () => {
+  it('responds with 200 status code', async () => {
+    let response = await request.get('/qa/questions?product_id=1&count=1')
+    console.log('RESPONSE', response.body)
+    expect(response.statusCode).toBe(200);
+    expect(response.body.product_id).toEqual('1')
+  }, 1000 * 30);
+});
