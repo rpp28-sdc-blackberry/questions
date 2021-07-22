@@ -78,16 +78,13 @@ jobs:
           psql \
           -d $TEST_DATABASE_URL \
           -c "INSERT INTO photos (answer_id, url) VALUES(1, 'photo1'), (1, 'photo2'), (1, 'photo3'), (2, 'photo4');"
-      - run: |
-          psql \
-          -d $TEST_DATABASE_URL \
-          -c "SELECT * FROM answers WHERE question_id=1;"
+      # - run: |
+      #     psql \
+      #     -d $TEST_DATABASE_URL \
+      #     -c "SELECT * FROM answers WHERE question_id=1;"
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
       - node/install-packages
-      # If you are using yarn instead npm, remove the line above and uncomment the two lines below.
-      # - node/install-packages:
-      #     pkg-manager: yarn
       # - run:
       #     name: Wait for Postgres to start
       #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
