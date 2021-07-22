@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "jest": {
+    "setupFiles": ["<rootDir>/test/setEnvVars.js"],
     "verbose": true
   },
   "scripts": {
