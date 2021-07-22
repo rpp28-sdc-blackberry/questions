@@ -1,11 +1,15 @@
 const { Client } = require('pg');
+const database = process.env.NODE_ENV === 'development' ? 'qna' : 'qna-test'
 const client = new Client({
   database: 'qna',
 });
+console.log('DB env', process.env.NODE_ENV)
 
-client.connect()
-  .then(() => console.log('CONNECTED TO PG'))
-  .catch((err) => console.log('ERROR CONNECTING TO PG', err))
+if (process.env.NODE_ENV === 'development') {
+  client.connect()
+    .then(() => console.log('CONNECTED TO PG'))
+    .catch((err) => console.log('ERROR CONNECTING TO PG', err))
+}
 
 let getQuestions = (product_id, offset, limit) => {
   console.log('OFSET', offset, 'limit', limit)
@@ -181,6 +185,7 @@ let reportAnswer = (answer_id) => {
     });
 }
 
+module.exports.client = client;
 module.exports.getQuestions = getQuestions;
 module.exports.getAnswers = getAnswers;
 module.exports.addQuestion = addQuestion;

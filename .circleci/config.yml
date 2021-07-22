@@ -17,8 +17,17 @@ jobs:
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
     docker:
       - image: cimg/node:15.1
+        environment:
+          NODE_ENV: test
+          # TEST_DATABASE_URL: postgresql://root@localhost/circle_test
+          # POSTGRES_USER: circleci
+          # POSTGRES_DB: circleci
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
+      - image: circleci/postgres:9.6-alpine
+        # environment:
+        #   POSTGRES_USER: circleci
+        #   POSTGRES_DB: circleci
     steps:
       # Checkout the code as the first step.
       - checkout
@@ -28,6 +37,9 @@ jobs:
       # If you are using yarn instead npm, remove the line above and uncomment the two lines below.
       # - node/install-packages:
       #     pkg-manager: yarn
+      # - run:
+      #     name: Wait for Postgres to start
+      #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Run tests
           command: npm test
