@@ -1,7 +1,9 @@
 const { Client } = require('pg');
 const database = process.env.NODE_ENV === 'development' ? 'qna' : 'qna-test'
+const user = process.env.NODE_ENV === 'development' ? 'farhanali3193' : 'postgres'
 const client = new Client({
   database: database,
+  user: user
 });
 console.log('DB env', process.env.NODE_ENV)
 
