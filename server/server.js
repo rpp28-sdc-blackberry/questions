@@ -12,10 +12,6 @@ app.use(bodyParser.json({limit: '100mb'}));
 app.use(cors());
 
 //ROUTES
-//DUMMY
-app.get('/dummy', (req, res) => {
-  res.sendStatus(200);
-})
 
 //GET ALL QUESTIONS
 app.get(`/qa/questions`, (req, res) => {

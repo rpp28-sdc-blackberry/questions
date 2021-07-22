@@ -21,13 +21,6 @@ afterAll(async () => {
   await db.client.end();
 });
 
-describe('GET/dummy', () => {
-  it('responds with 200 status code', (done) => {
-    request.get('/dummy')
-      .expect(200, done);
-  });
-});
-
 describe('GET questions', () => {
   it('should respond with 200 status code and all questions', async () => {
     let response = await request.get('/qa/questions').query({product_id: 1, count: 4});
@@ -139,6 +132,7 @@ describe('Report Question', () => {
     let getResponse = await request.get('/qa/questions').query({product_id: 1, count: 10});
     let questions = getResponse.body.results;
     // console.log('after adding a Q', questions)
+    expect(questions.length).toEqual(2)
     expect(questions[1].question_id).toEqual(3);
 
     let putResponse = await request.put('/qa/questions/3/report');
@@ -150,5 +144,56 @@ describe('Report Question', () => {
 
     expect(newQuestions.length).toEqual(1);
     expect(newQuestions[0].question_id).toEqual(1);
+  });
+});
+
+describe('Increase answer helpfulness', () => {
+  it('should respond with 204 status code and should increase helpfulness count', async () => {
+    let oldGetResponse = await request.get('/qa/questions/1/answers');
+    let oldAnswers = oldGetResponse.body.results;
+    // console.log('OLD ANSWERS', oldAnswers)
+
+    expect(oldAnswers[0].answer_id).toEqual(1);
+    expect(oldAnswers[0].helpfulness).toEqual(0);
+
+    let putResponse = await request.put('/qa/answers/1/helpful');
+    expect(putResponse.statusCode).toEqual(204);
+
+    let newGetResponse = await request.get('/qa/questions/1/answers');
+    let newAnswers = newGetResponse.body.results;
+    // console.log('NEW ANSWERS', newAnswers)
+
+    expect(newAnswers[0].answer_id).toEqual(1);
+    expect(newAnswers[0].helpfulness).toEqual(1);
+  });
+});
+
+describe('Report Answer', () => {
+  it('should respond with 204 status code and should not return the reported answer', async () => {
+    let answerBody = {
+      name: 'A3',
+      body: 'A3',
+      email: 'a3@g.com',
+      photos: ['photo5']
+    };
+
+    let postResponse = await request.post('/qa/questions/1/answers').send(answerBody)
+    expect(postResponse.statusCode).toEqual(201);
+
+    let getResponse = await request.get('/qa/questions/1/answers');
+    let answers = getResponse.body.results;
+    // console.log('after adding an Answer', answers)
+    expect(answers.length).toEqual(2);
+    expect(answers[1].answer_id).toEqual(3);
+
+    let putResponse = await request.put('/qa/answers/3/report');
+    expect(putResponse.statusCode).toEqual(204);
+
+    let newGetResponse = await request.get('/qa/questions/1/answers');
+    let newAnswers = newGetResponse.body.results;
+    // console.log('AFTER REMOVING AN ANSWER', newAnswers)
+
+    expect(newAnswers.length).toEqual(1);
+    expect(newAnswers[0].answer_id).toEqual(1);
   });
 });
