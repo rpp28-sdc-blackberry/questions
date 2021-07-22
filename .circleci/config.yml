@@ -45,6 +45,9 @@ jobs:
               reported boolean DEFAULT false,
               question_helpfulness integer DEFAULT 0
             );"
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
           -c "CREATE TABLE answers (
               answer_id SERIAL PRIMARY KEY,
               question_id integer REFERENCES questions ON DELETE CASCADE,
