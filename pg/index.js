@@ -5,11 +5,11 @@ const client = new Client({
 });
 console.log('DB env', process.env.NODE_ENV)
 
-if (process.env.NODE_ENV === 'development') {
+
   client.connect()
     .then(() => console.log('CONNECTED TO PG'))
     .catch((err) => console.log('ERROR CONNECTING TO PG', err))
-}
+
 
 let getQuestions = (product_id, offset, limit) => {
   console.log('OFSET', offset, 'limit', limit)
