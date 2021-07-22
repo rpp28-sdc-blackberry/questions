@@ -34,13 +34,32 @@ describe('GET/qa/questions', () => {
     let response = await request.get('/qa/questions?product_id=1&count=1')
     let questions = response.body.results;
     console.log('QUESTIONS', questions[0].answers['1'])
+
     expect(response.statusCode).toBe(200);
     expect(response.body.product_id).toEqual('1');
+
     expect(questions.length).toEqual(1);
     expect(questions[0].question_id).toEqual(1);
 
     let answer = questions[0].answers['1'];
     expect(answer.id).toEqual(1);
     expect(answer.photos.length).toEqual(3)
+  });
+});
+
+describe('GET/qa/questions/:question_id/answers', () => {
+  it('should respond with 200 status code and all questions', async () => {
+    let response = await request.get('/qa/questions/1/answers')
+    let answers = response.body.results;
+    console.log('ANSWERS', answers[0]);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.question).toEqual('1');
+
+    expect(answers.length).toEqual(1);
+    expect(answers[0].answer_id).toEqual(1);
+
+    let photos = answers[0].photos;
+    expect(photos.length).toEqual(3);
   });
 });
