@@ -19,15 +19,15 @@ jobs:
       - image: cimg/node:15.1
         environment:
           NODE_ENV: test
-          TEST_DATABASE_URL: postgresql://postgres@localhost/circle_test
+          TEST_DATABASE_URL: postgresql://postgres@localhost/test1
           # POSTGRES_USER: postgres
-          POSTGRES_DB: circle_test
+          POSTGRES_DB: test1
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
       - image: circleci/postgres:9.6-alpine
         environment:
         #   POSTGRES_USER: postgres
-          POSTGRES_DB: circle_test
+          POSTGRES_DB: test1
     steps:
       # Checkout the code as the first step.
       - checkout
