@@ -19,7 +19,7 @@ jobs:
       - image: cimg/node:15.1
         environment:
           NODE_ENV: test
-          TEST_DATABASE_URL: postgresql://postgres@localhost/qna-test
+          TEST_DATABASE_URL: postgresql://postgres@localhost/test
           # POSTGRES_USER: postgres
           # POSTGRES_DB: circle_test
     # Then run your tests!
