@@ -36,7 +36,7 @@ jobs:
           psql \
           -d $TEST_DATABASE_URL \
           -c "CREATE TABLE questions (
-              question_id integer PRIMARY KEY,
+              question_id SERIAL PRIMARY KEY,
               product_id integer,
               question_body text,
               question_date timestamp DEFAULT CURRENT_TIMESTAMP(0),
@@ -48,8 +48,11 @@ jobs:
       - run: |
           psql \
           -d $TEST_DATABASE_URL \
-          -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Jennifer');"
-
+          -c "INSERT INTO questions (product_id, question_body, asker_name, asker_email) VALUES(1, 'test body1', 'test1', 'test1@g.com');"
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "SELECT * FROM questions;"
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
       - node/install-packages
