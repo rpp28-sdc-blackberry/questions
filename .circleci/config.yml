@@ -19,7 +19,7 @@ jobs:
       - image: cimg/node:15.1
         environment:
           NODE_ENV: test
-          TEST_DATABASE_URL: postgresql://postgres@localhost/circle_test
+          TEST_DATABASE_URL: postgresql://postgres@localhost/qna-test
           # POSTGRES_USER: postgres
           # POSTGRES_DB: circle_test
     # Then run your tests!
@@ -35,7 +35,8 @@ jobs:
       - run: |
           psql \
           -d $TEST_DATABASE_URL \
-          -c "CREATE TABLE test (name char(25));"
+          -c "CREATE TABLE questions (question_id integer PRIMARY KEY, product_id integer, question_body text, question_date timestamp DEFAULT CURRENT_TIMESTAMP(0), asker_name text, asker_email text, reported boolean DEFAULT false, question_helpfulness integer DEFAULT 0);"
+          -c "CREATE TABLE answers (answer_id integer PRIMARY KEY, question_id integer REFERENCES questions ON DELETE CASCADE, body text, date timestamp DEFAULT CURRENT_TIMESTAMP(0), answerer_name text, answerer_email text, reported boolean DEFAULT false, helpfulness integer DEFAULT 0);"
       - run: |
           psql \
           -d $TEST_DATABASE_URL \
