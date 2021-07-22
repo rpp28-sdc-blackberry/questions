@@ -21,7 +21,6 @@ afterAll(async () => {
   await db.client.end();
 });
 
-
 describe('GET/dummy', () => {
   it('responds with 200 status code', (done) => {
     request.get('/dummy')
@@ -29,7 +28,7 @@ describe('GET/dummy', () => {
   });
 });
 
-xdescribe('GET questions', () => {
+describe('GET questions', () => {
   it('should respond with 200 status code and all questions', async () => {
     let response = await request.get('/qa/questions').query({product_id: 1, count: 4});
     let questions = response.body.results;
@@ -47,7 +46,7 @@ xdescribe('GET questions', () => {
   });
 });
 
-xdescribe('GET answers', () => {
+describe('GET answers', () => {
   it('should respond with 200 status code and all questions', async () => {
     let response = await request.get('/qa/questions/1/answers')
     let answers = response.body.results;
@@ -64,7 +63,7 @@ xdescribe('GET answers', () => {
   });
 });
 
-xdescribe('POST question', () => {
+describe('POST question', () => {
   it('should respond with 201 status code and should add a question', async () => {
     let questionBody = {
       name: 'Q3',
@@ -102,5 +101,54 @@ describe('POST answer', () => {
     expect(answers.length).toEqual(2);
     expect(answers[1].answer_id).toEqual(3);
     expect(answers[1].body).toEqual('A3');
+  });
+});
+
+describe('Increase question helpfulness', () => {
+  it('should respond with 204 status code and should increase helpfulness count', async () => {
+    let oldGetResponse = await request.get('/qa/questions').query({product_id: 1, count: 10});
+    let oldQuestions = oldGetResponse.body.results;
+    // console.log('OLD QUESTIONS', oldQuestions)
+
+    expect(oldQuestions[0].question_id).toEqual(1);
+    expect(oldQuestions[0].question_helpfulness).toEqual(0);
+
+    let putResponse = await request.put('/qa/questions/1/helpful');
+    expect(putResponse.statusCode).toEqual(204);
+
+    let newGetResponse = await request.get('/qa/questions').query({product_id: 1, count: 10});
+    let newQuestions = newGetResponse.body.results;
+    // console.log('NEW QUESTIONS', newQuestions)
+
+    expect(newQuestions[0].question_id).toEqual(1);
+    expect(newQuestions[0].question_helpfulness).toEqual(1);
+  });
+});
+
+describe('Report Question', () => {
+  it('should respond with 204 status code and should not return the reported question', async () => {
+    let questionBody = {
+      name: 'Q3',
+      body: 'Q3',
+      email: 'q3@g.com',
+      product_id: 1
+    }
+    let postResponse = await request.post('/qa/questions').send(questionBody)
+    expect(postResponse.statusCode).toEqual(201);
+
+    let getResponse = await request.get('/qa/questions').query({product_id: 1, count: 10});
+    let questions = getResponse.body.results;
+    // console.log('after adding a Q', questions)
+    expect(questions[1].question_id).toEqual(3);
+
+    let putResponse = await request.put('/qa/questions/3/report');
+    expect(putResponse.statusCode).toEqual(204);
+
+    let newGetResponse = await request.get('/qa/questions').query({product_id: 1, count: 10});
+    let newQuestions = newGetResponse.body.results;
+    // console.log('AFTER REMOVING A Q', newQuestions)
+
+    expect(newQuestions.length).toEqual(1);
+    expect(newQuestions[0].question_id).toEqual(1);
   });
 });
