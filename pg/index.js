@@ -1,4 +1,5 @@
 const { Client } = require('pg');
+const database = process.env.NODE_ENV === 'development' ? 'qna' : 'qna-test'
 const client = new Client({
   database: 'qna',
 });
