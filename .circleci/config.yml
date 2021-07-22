@@ -45,6 +45,16 @@ jobs:
               reported boolean DEFAULT false,
               question_helpfulness integer DEFAULT 0
             );"
+          -c "CREATE TABLE answers (
+              answer_id SERIAL PRIMARY KEY,
+              question_id integer REFERENCES questions ON DELETE CASCADE,
+              body text,
+              date timestamp DEFAULT CURRENT_TIMESTAMP(0),
+              answerer_name text,
+              answerer_email text,
+              reported boolean DEFAULT false,
+              helpfulness integer DEFAULT 0
+            );"
       - run: |
           psql \
           -d $TEST_DATABASE_URL \
