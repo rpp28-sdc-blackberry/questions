@@ -36,7 +36,6 @@ jobs:
           psql \
           -d $TEST_DATABASE_URL \
           -c "CREATE TABLE questions (question_id integer PRIMARY KEY, product_id integer, question_body text, question_date timestamp DEFAULT CURRENT_TIMESTAMP(0), asker_name text, asker_email text, reported boolean DEFAULT false, question_helpfulness integer DEFAULT 0);"
-          -c "CREATE TABLE answers (answer_id integer PRIMARY KEY, question_id integer REFERENCES questions ON DELETE CASCADE, body text, date timestamp DEFAULT CURRENT_TIMESTAMP(0), answerer_name text, answerer_email text, reported boolean DEFAULT false, helpfulness integer DEFAULT 0);"
       - run: |
           psql \
           -d $TEST_DATABASE_URL \
