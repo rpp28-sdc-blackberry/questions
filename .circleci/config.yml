@@ -66,22 +66,6 @@ jobs:
               answer_id integer REFERENCES answers ON DELETE CASCADE,
               url text
             );"
-      # - run: |
-      #     psql \
-      #     -d $TEST_DATABASE_URL \
-      #     -c "INSERT INTO questions (product_id, question_body, asker_name, asker_email) VALUES(1, 'test body1', 'test1', 'test1@g.com'),(2, 'test body2', 'test2', 'test2@g.com');"
-      # - run: |
-      #     psql \
-      #     -d $TEST_DATABASE_URL \
-      #     -c "INSERT INTO answers (question_id, body, answerer_name, answerer_email) VALUES(1, 'answer body1', 'answer1', 'answer1@g.com'),(2, 'answer body2', 'answer2', 'answer2@g.com');"
-      # - run: |
-      #     psql \
-      #     -d $TEST_DATABASE_URL \
-      #     -c "INSERT INTO photos (answer_id, url) VALUES(1, 'photo1'), (1, 'photo2'), (1, 'photo3'), (2, 'photo4');"
-      # - run: |
-      #     psql \
-      #     -d $TEST_DATABASE_URL \
-      #     -c "SELECT * FROM answers WHERE question_id=1;"
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
       - node/install-packages

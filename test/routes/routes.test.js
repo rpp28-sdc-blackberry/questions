@@ -1,15 +1,7 @@
-// process.env.NODE_ENV = "test";
-
 const supertest = require('supertest');
 const app = require('../../server/server.js').app;
 const request = supertest(app);
 const db = require('../../pg/index.js');
-
-// beforeAll(async () => {
-//   db.client.connect()
-//     .then(() => console.log('TEST PG CONNECTED'))
-//     .catch((err) => console.log('TEST PG NOT CONNECTED', err))
-// })
 
 beforeEach(async () => {
   await db.client.query(`ALTER SEQUENCE questions_question_id_seq RESTART`);
