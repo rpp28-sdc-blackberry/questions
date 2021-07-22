@@ -29,7 +29,7 @@ describe('GET/dummy', () => {
   });
 });
 
-describe('GET questions', () => {
+xdescribe('GET questions', () => {
   it('should respond with 200 status code and all questions', async () => {
     let response = await request.get('/qa/questions').query({product_id: 1, count: 4});
     let questions = response.body.results;
@@ -47,7 +47,7 @@ describe('GET questions', () => {
   });
 });
 
-describe('GET answers', () => {
+xdescribe('GET answers', () => {
   it('should respond with 200 status code and all questions', async () => {
     let response = await request.get('/qa/questions/1/answers')
     let answers = response.body.results;
@@ -64,12 +64,12 @@ describe('GET answers', () => {
   });
 });
 
-describe('POST question', () => {
+xdescribe('POST question', () => {
   it('should respond with 201 status code and should add a question', async () => {
     let questionBody = {
-      name: 'Q 2',
-      body: 'Q2',
-      email: 'q2@g.com',
+      name: 'Q3',
+      body: 'Q3',
+      email: 'q3@g.com',
       product_id: 1
     }
     let postResponse = await request.post('/qa/questions').send(questionBody)
@@ -78,8 +78,29 @@ describe('POST question', () => {
     let getResponse = await request.get('/qa/questions').query({product_id: 1, count: 10});
     let questions = getResponse.body.results;
 
-    console.log('NEW QUESTIONS', questions)
+    // console.log('NEW QUESTIONS', questions)
     expect(questions.length).toEqual(2);
     expect(questions[1].question_id).toEqual(3);
+  });
+});
+
+describe('POST answer', () => {
+  it('should respond with 201 status code and should add an answer', async () => {
+    let answerBody = {
+      name: 'A3',
+      body: 'A3',
+      email: 'a3@g.com',
+      photos: ['photo5']
+    }
+    let postResponse = await request.post('/qa/questions/1/answers').send(answerBody)
+    expect(postResponse.statusCode).toEqual(201);
+
+    let getResponse = await request.get('/qa/questions/1/answers');
+    let answers = getResponse.body.results;
+
+    // console.log('NEW ANSWERS', answers)
+    expect(answers.length).toEqual(2);
+    expect(answers[1].answer_id).toEqual(3);
+    expect(answers[1].body).toEqual('A3');
   });
 });
