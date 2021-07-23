@@ -1,15 +1,25 @@
 const { Client } = require('pg');
-const database = process.env.NODE_ENV === 'development' ? 'qna' : 'qna-test'
+
+let database;
+let user;
+
+if (process.env.NODE_ENV === 'development') {
+  database = 'qna';
+  user = 'farhanali3193';
+} else if (process.env.NODE_ENV === 'test') {
+  database = 'qna-test';
+  user = 'postgres';
+}
+
 const client = new Client({
-  database: 'qna',
+  database: database,
+  user: user
 });
 console.log('DB env', process.env.NODE_ENV)
 
-if (process.env.NODE_ENV === 'development') {
-  client.connect()
-    .then(() => console.log('CONNECTED TO PG'))
-    .catch((err) => console.log('ERROR CONNECTING TO PG', err))
-}
+client.connect()
+  .then(() => console.log(`CONNECTED TO PG: DATABASE: ${database}`))
+  .catch((err) => console.log(`ERROR CONNECTING TO PG: DATABASE ${database}`, err))
 
 let getQuestions = (product_id, offset, limit) => {
   console.log('OFSET', offset, 'limit', limit)

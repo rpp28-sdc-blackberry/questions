@@ -12,6 +12,7 @@ app.use(bodyParser.json({limit: '100mb'}));
 app.use(cors());
 
 //ROUTES
+
 //GET ALL QUESTIONS
 app.get(`/qa/questions`, (req, res) => {
   // console.log(req.query)
