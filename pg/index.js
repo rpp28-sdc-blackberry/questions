@@ -28,16 +28,20 @@ let getQuestions = (product_id, offset, limit) => {
 
   return client.query(questionsQuery, values)
     .then(async (res) => {
-      // console.log('DB ALL QUESTIONS', res.rows);
-      let questions = res.rows;
+      try {
+        // console.log('DB ALL QUESTIONS', res.rows);
+        let questions = res.rows;
 
-      for (let question of questions) {
-        let answersQuery = `SELECT * FROM answers WHERE question_id = $1 ORDER BY answer_id`
-        let answers = await getAnswers(question.question_id, null, null, answersQuery);
-        question.answers = answers;
+        for (let question of questions) {
+          let answersQuery = `SELECT * FROM answers WHERE question_id = $1 ORDER BY answer_id`
+          let answers = await getAnswers(question.question_id, null, null, answersQuery);
+          question.answers = answers;
+        }
+        // console.log('DB QUESTIONS AFTER ADDING ALL ANSWERS', questions);
+        return questions;
+      } catch(err) {
+        console.log('ERROR AWAITING FOR ANSWERS', err)
       }
-      // console.log('DB QUESTIONS AFTER ADDING ALL ANSWERS', questions);
-      return questions;
     })
     .catch((err) => {
       console.log('DB ERROR GETTING ALL QUESTIONS', err);
@@ -56,16 +60,20 @@ let getAnswers = (question_id, offset, limit, answersQuery) => {
 
   return client.query(answersQuery, values)
     .then(async (res) => {
-      // console.log('DB ALL ANSWERS', res.rows);
-      let answers = res.rows;
+      try {
+        // console.log('DB ALL ANSWERS', res.rows);
+        let answers = res.rows;
 
-      for (let answer of answers) {
-        let photos = await getPhotos(answer.answer_id);
-        answer.photos = photos;
+        for (let answer of answers) {
+          let photos = await getPhotos(answer.answer_id);
+          answer.photos = photos;
+        }
+
+        // console.log('DB ANSWERS AFTER ADDING ALL PHOTOS', answers);
+        return answers;
+      } catch(err) {
+        console.log('ERROR AWAITING FOR PHOTOS', err)
       }
-
-      // console.log('DB ANSWERS AFTER ADDING ALL PHOTOS', answers);
-      return answers;
     })
     .catch((err) => {
       console.log('DB ERROR GETTING ALL ANSWERS', err);
