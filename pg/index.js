@@ -22,7 +22,7 @@ client.connect()
   .catch((err) => console.log(`ERROR CONNECTING TO PG: DATABASE ${database}`, err))
 
 let getQuestions = (product_id, offset, limit) => {
-  console.log('OFSET', offset, 'limit', limit)
+  // console.log('OFSET', offset, 'limit', limit)
   let questionsQuery = `SELECT * FROM questions WHERE product_id = $1 ORDER BY question_id ASC OFFSET $2 LIMIT $3`;
   let values = [product_id, offset, limit];
 

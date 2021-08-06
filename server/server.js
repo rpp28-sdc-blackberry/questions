@@ -32,7 +32,7 @@ app.get(`/qa/questions`, (req, res) => {
 
   return db.getQuestions(product_id, offset, count)
     .then((questions) => {
-      console.log('SERVER ALL QUESTIONS', questions);
+      // console.log('SERVER ALL QUESTIONS', questions);
       let filteredQuestions = questions.filter((question) => !question.reported);
       let requiredQuestions = filteredQuestions.map((question) => {
         let requiredAnswers = {};
