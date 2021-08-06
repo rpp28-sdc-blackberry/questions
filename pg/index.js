@@ -119,7 +119,7 @@ let addAnswer = (question_id, body, name, email) => {
 
   return client.query(addAnswerQuery, values)
     .then((addedAnswer) => {
-      console.log('DB POSTED ANSWER', addedAnswer.rows)
+      // console.log('DB POSTED ANSWER', addedAnswer.rows)
       return addedAnswer.rows[0];
     })
     .catch((err) => {

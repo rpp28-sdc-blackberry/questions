@@ -97,7 +97,7 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
 
   return db.getAnswers(question_id, offset, count)
     .then((answers) => {
-      console.log('SERVER ALL ANSWERS', answers);
+      // console.log('SERVER ALL ANSWERS', answers);
       let filteredAnswers = answers.filter((answer) => !answer.reported);
       let requiredAnswers = filteredAnswers.map(({ answer_id, body, date, answerer_name, helpfulness, photos }) => {
         let newAnswer = {
@@ -129,11 +129,11 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
 //ADD A QUESTION
 
 app.post(`/qa/questions`, (req, res) => {
-  console.log('req body', req.body);
+  // console.log('req body', req.body);
 
   return db.addQuestion(req.body)
     .then((savedQ) => {
-      console.log('SERVER: ADDED Q', savedQ);
+      // console.log('SERVER: ADDED Q', savedQ);
       res.status(201).send('Created');
     })
     .catch((err) => {
@@ -154,7 +154,7 @@ app.post(`/qa/questions/:question_id/answers`, (req, res) => {
   }
   return db.addAnswer(question_id, body, name, email)
     .then((savedA) => {
-      console.log('SERVER: ADDED ANSWER', savedA);
+      // console.log('SERVER: ADDED ANSWER', savedA);
       if (photos.length === 0) {
         return res.status(201).send('Created');
       }
@@ -162,7 +162,7 @@ app.post(`/qa/questions/:question_id/answers`, (req, res) => {
       let promisesPhotos = photos.map((photo) => db.addPhoto(savedA.answer_id, photo));
       return Promise.all(promisesPhotos)
         .then((savedPhotos) => {
-          console.log('SERVER: ADDED PHOTOS', savedPhotos);
+          // console.log('SERVER: ADDED PHOTOS', savedPhotos);
           res.status(201).send('Created');
         })
         .catch((err) => {

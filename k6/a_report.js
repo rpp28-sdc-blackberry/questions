@@ -2,8 +2,8 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export let options = {
-  vus: 1,
-  duration: '1m',
+  vus: 20,
+  duration: '20s',
   // iterations: 1,
   // thresholds: {
   //   // 90% of requests must finish within 400ms.
@@ -12,6 +12,8 @@ export let options = {
 };
 
 export default function () {
-  http.get('http://localhost:3000/qa/questions/11/answers');
-  sleep(1);
+  let url = 'http://localhost:3000/qa/answers/6400000/report';
+
+  http.put(url);
+  // sleep(1);
 }
