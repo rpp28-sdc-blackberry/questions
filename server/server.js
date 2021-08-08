@@ -30,7 +30,7 @@ app.get(`/qa/questions`, (req, res) => {
 
   let offset = (page - 1) * count;
 
-  return db.getQuestionsTest(product_id, offset, count)
+  return db.getQuestions(product_id, offset, count)
     .then((questions) => {
       // console.log('SERVER ALL QUESTIONS', questions);
       let requiredQuestions = Object.values(questions);
@@ -66,7 +66,7 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
 
   let offset = (page - 1) * count;
 
-  return db.getAnswersTest(question_id, offset, count)
+  return db.getAnswers(question_id, offset, count)
     .then((answers) => {
       // console.log('SERVER ALL ANSWERS', answers);
       let requiredAnswers = Object.values(answers);
