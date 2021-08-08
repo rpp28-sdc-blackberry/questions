@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export let options = {
-  vus: 10,
+  vus: 5,
   duration: '30s',
   // rps: 1000,
   // iterations: 10000,
@@ -29,6 +29,6 @@ export let options = {
 };
 
 export default function () {
-  http.get('http://localhost:3000/qa/questions?product_id=100000');
+  http.get('http://localhost:3000/qa/questions?product_id=990000');
   // sleep(1);
 }

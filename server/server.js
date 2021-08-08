@@ -40,46 +40,6 @@ app.get(`/qa/questions`, (req, res) => {
       };
       res.status(200).send(result);
     })
-
-  // return db.getQuestions(product_id, offset, count)
-  //   .then((questions) => {
-  //     // console.log('SERVER ALL QUESTIONS', questions);
-  //     let filteredQuestions = questions.filter((question) => !question.reported);
-  //     let requiredQuestions = filteredQuestions.map((question) => {
-  //       let requiredAnswers = {};
-  //       let filteredAnswers = question.answers.filter((answer) => !answer.reported);
-  //       let answers = filteredAnswers.forEach((answer) => {
-  //         let photos = answer.photos;
-  //         let requiredPhotos = photos.map((photo) => photo.url);
-  //         let newAnswer = {
-  //           id: answer.answer_id,
-  //           body: answer.body,
-  //           date: answer.date,
-  //           answerer_name: answer.answerer_name,
-  //           helpfulness: answer.helpfulness,
-  //           photos: requiredPhotos
-  //         }
-  //         requiredAnswers[answer.answer_id] = newAnswer;
-  //       });
-
-  //       let newQuestion = {
-  //         question_id: question.question_id,
-  //         question_body: question.question_body,
-  //         question_date: question.question_date,
-  //         asker_name: question.asker_name,
-  //         question_helpfulness: question.question_helpfulness,
-  //         reported: question.reported,
-  //         answers: requiredAnswers
-  //       }
-  //       return newQuestion;
-  //     });
-
-  //     let result = {
-  //       product_id,
-  //       results: requiredQuestions
-  //     };
-  //     res.status(200).send(result);
-  //   })
     .catch((err) => {
       console.log('SERVER ERROR GETTING ALL QUESTIONS', err)
       res.status(500).send(err);
@@ -111,37 +71,13 @@ app.get(`/qa/questions/:question_id/answers`, (req, res) => {
       // console.log('SERVER ALL ANSWERS', answers);
       let requiredAnswers = Object.values(answers);
       let result = {
-      question: question_id,
-      page,
-      count,
-      results: requiredAnswers
+        question: question_id,
+        page,
+        count,
+        results: requiredAnswers
       }
       res.status(200).send(result);
     })
-  // return db.getAnswers(question_id, offset, count)
-  //   .then((answers) => {
-  //     console.log('SERVER ALL ANSWERS', answers);
-  //     let filteredAnswers = answers.filter((answer) => !answer.reported);
-  //     let requiredAnswers = filteredAnswers.map(({ answer_id, body, date, answerer_name, helpfulness, photos }) => {
-  //       let newAnswer = {
-  //         answer_id,
-  //         body,
-  //         date,
-  //         answerer_name,
-  //         helpfulness,
-  //         photos
-  //       }
-  //       return newAnswer;
-  //     });
-
-  //     let result = {
-  //       question: question_id,
-  //       page,
-  //       count,
-  //       results: requiredAnswers
-  //     }
-  //     res.status(200).send(result);
-  //   })
     .catch((err) => {
       console.log('SERVER ERROR GETTING ALL ANSWERS', err)
       res.status(500).send(err);

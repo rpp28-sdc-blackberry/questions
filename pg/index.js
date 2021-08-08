@@ -141,7 +141,7 @@ let getQuestionsTest = (product_id, offset, limit) => {
       throw err;
     })
 }
-// getQuestionsTest(1, 2, 2)
+// getQuestionsTest(990000, 0, 5)
 
 let getAnswers = (question_id, offset, limit, answersQuery) => {
   let values;
