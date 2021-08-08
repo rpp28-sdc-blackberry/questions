@@ -84,3 +84,8 @@ ALTER TABLE photos ALTER COLUMN id SET DEFAULT nextval('photos_seq');
 -- DROP staging tables
 DROP TABLE questions_staging;
 DROP TABLE answers_staging;
+
+--CREATE INDEXES
+CREATE INDEX photos_answer_id ON photos(answer_id);
+CREATE INDEX answers_question_id ON answers(question_id);
+CREATE INDEX questions_product_id ON questions(product_id);

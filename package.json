@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "jest": {
-    "setupFiles": ["<rootDir>/test/setEnvVars.js"],
+    "setupFiles": [
+      "<rootDir>/test/setEnvVars.js"
+    ],
     "testTimeout": 30000,
     "verbose": true
   },
@@ -35,6 +37,7 @@
     "jest": "^27.0.6",
     "jest-cli": "^27.0.6",
     "mongoose": "^5.13.2",
+    "newrelic": "^8.0.0",
     "nodemon": "^2.0.9",
     "pg": "^8.6.0",
     "supertest": "^6.1.4"
