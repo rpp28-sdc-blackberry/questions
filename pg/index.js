@@ -2,24 +2,47 @@ const { Client } = require('pg');
 
 let database;
 let user;
+let password;
+let port;
 
 if (process.env.NODE_ENV === 'development') {
   database = 'qna';
   user = 'farhanali3193';
+  password='';
+  port=5432;
 } else if (process.env.NODE_ENV === 'test') {
   database = 'qna-test';
   user = 'postgres';
+  password='';
+  port=5432;
+} else if (process.env.NODE_ENV === 'production') {
+  database = 'qna';
+  user = 'postgres';
+  password='postgres';
+  port=5431;
 }
 
+//farhanali3193 user doesnt need a password. Even an empty string works.
 const client = new Client({
   database: database,
-  user: user
+  user: user,
+  password: 'postgres',
+  // host: '127.0.0.1',
+  port: port,
 });
 console.log('DB env', process.env.NODE_ENV)
 
 client.connect()
   .then(() => console.log(`CONNECTED TO PG: DATABASE: ${database}`))
   .catch((err) => console.log(`ERROR CONNECTING TO PG: DATABASE ${database}`, err))
+
+// client.query('SELECT * FROM team;', (err, dbResponse) => {
+//   if (err) {
+//     console.log('ERRROORR', err)
+//     throw err;
+//   }
+//   console.log('RESPONSE', dbResponse.rows)
+// });
 
 let getQuestions = (product_id, offset, limit) => {
   let questionsQuery = `SELECT questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.reported, questions.question_helpfulness, answers.answer_id AS id, answers.body, answers.date, answers.answerer_name, answers.reported AS answer_reported, answers.helpfulness, photos.url AS photo_url FROM questions LEFT OUTER JOIN answers ON (questions.question_id = answers.question_id) LEFT OUTER JOIN photos ON (answers.answer_id = photos.answer_id) WHERE questions.product_id = $1 ORDER BY questions.question_id`;
