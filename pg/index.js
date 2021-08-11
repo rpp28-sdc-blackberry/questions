@@ -3,32 +3,32 @@ const { Client } = require('pg');
 let database;
 let user;
 let password;
-let port;
+let host;
 
 if (process.env.NODE_ENV === 'development') {
   database = 'qna';
   user = 'farhanali3193';
-  password='';
-  port=5432;
+  password ='';
+  host = 'localhost';
 } else if (process.env.NODE_ENV === 'test') {
   database = 'qna-test';
   user = 'postgres';
   password='';
-  port=5432;
+  host = 'localhost';
 } else if (process.env.NODE_ENV === 'production') {
   database = 'qna';
   user = 'postgres';
-  password='postgres';
-  port=5431;
+  password ='postgres';
+  host = '44.197.129.107';
 }
 
 //farhanali3193 user doesnt need a password. Even an empty string works.
 const client = new Client({
   database: database,
-  user: user,
+  user: 'postgres',
   password: 'postgres',
-  // host: '127.0.0.1',
-  port: port,
+  host: host,
+  port: 5432,
 });
 console.log('DB env', process.env.NODE_ENV)
 
