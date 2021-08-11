@@ -5,3 +5,4 @@ coverage
 newrelic.js
 newrelic_agent.log
 docker-compose.yml
+Dockerfile
