@@ -12,6 +12,9 @@ app.use(bodyParser.json({limit: '100mb'}));
 app.use(cors());
 
 //ROUTES
+app.get(`/loaderio-42755f21e22c5f08bdde6716d554085f.txt`, (req, res) => {
+  res.send(process.env.LOADER_IO_KEY)
+});
 
 //GET ALL QUESTIONS
 app.get(`/qa/questions`, (req, res) => {
