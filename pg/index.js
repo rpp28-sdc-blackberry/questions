@@ -2,18 +2,32 @@ const { Client } = require('pg');
 
 let database;
 let user;
+let password;
+let host;
 
 if (process.env.NODE_ENV === 'development') {
   database = 'qna';
   user = 'farhanali3193';
+  password = process.env.PG_DB_PASS_DEV;
+  host = 'localhost';
 } else if (process.env.NODE_ENV === 'test') {
   database = 'qna-test';
   user = 'postgres';
+  password = process.env.PG_DB_PASS_TEST;
+  host = 'localhost';
+} else if (process.env.NODE_ENV === 'production') {
+  database = 'qna';
+  user = 'postgres';
+  password = process.env.PG_DB_PASS_PROD;
+  host = '44.197.129.107';
 }
 
 const client = new Client({
   database: database,
-  user: user
+  user: user,
+  password: password,
+  host: host,
+  port: 5432,
 });
 console.log('DB env', process.env.NODE_ENV)
 
