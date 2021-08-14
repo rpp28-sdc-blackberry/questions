@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const AWS = require("aws-sdk");
+const AWS = require("aws-sdk");0
 const db = require('../pg/index.js');
 
 const app = express();
@@ -12,7 +12,7 @@ app.use(bodyParser.json({limit: '100mb'}));
 app.use(cors());
 
 //ROUTES
-app.get(`/loaderio-42755f21e22c5f08bdde6716d554085f.txt`, (req, res) => {
+app.get(`/${process.env.LOADER_IO_KEY}.txt`, (req, res) => {
   res.send(process.env.LOADER_IO_KEY)
 });
 
