@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
   host = '44.197.129.107';
 }
 
-const client = new Pool({
+const pool = new Pool({
   database: database,
   user: user,
   password: password,
@@ -31,10 +31,10 @@ const client = new Pool({
 });
 console.log('DB env', process.env.NODE_ENV)
 
-client.connect()
-  .then((cl) => {
+pool.connect()
+  .then((client) => {
     console.log(`CONNECTED TO PG: DATABASE: ${database}`);
-    cl.release();
+    client.release();
   })
   .catch((err) => console.log(`ERROR CONNECTING TO PG: DATABASE ${database}`, err))
 
@@ -46,8 +46,8 @@ let getQuestions = (product_id, offset, limit) => {
   let valuesForRequiredData = [product_id, offset, limit]
 
   let promises = [];
-  promises.push(client.query(requiredDataQuery, valuesForRequiredData));
-  promises.push(client.query(questionsQuery, values));
+  promises.push(pool.query(requiredDataQuery, valuesForRequiredData));
+  promises.push(pool.query(questionsQuery, values));
 
   return Promise.all(promises)
     .then((resolved) => {
@@ -139,8 +139,8 @@ let getAnswers = (question_id, offset, limit) => {
   let valuesForRequiredData = [question_id, offset, limit]
 
   let promises = [];
-  promises.push(client.query(requiredDataQuery, valuesForRequiredData));
-  promises.push(client.query(answersQuery, values));
+  promises.push(pool.query(requiredDataQuery, valuesForRequiredData));
+  promises.push(pool.query(answersQuery, values));
 
   return Promise.all(promises)
     .then((resolved) => {
@@ -201,7 +201,7 @@ let addQuestion = ({ product_id, body, name, email }) => {
   let addQuestionQuery = `INSERT INTO questions (product_id, question_body, asker_name, asker_email) VALUES($1, $2, $3, $4) RETURNING *`;
   let values = [product_id, body, name, email];
 
-  return client.query(addQuestionQuery, values)
+  return pool.query(addQuestionQuery, values)
     .then((addedQ) => {
       // console.log('DB POSTED QUESTION', addedQ.rows)
       return addedQ.rows;
@@ -216,7 +216,7 @@ let addAnswer = (question_id, body, name, email) => {
   let addAnswerQuery = `INSERT INTO answers (question_id, body, answerer_name, answerer_email) VALUES($1, $2, $3, $4) RETURNING *`;
   let values = [question_id, body, name, email];
 
-  return client.query(addAnswerQuery, values)
+  return pool.query(addAnswerQuery, values)
     .then((addedAnswer) => {
       // console.log('DB POSTED ANSWER', addedAnswer.rows)
       return addedAnswer.rows[0];
@@ -231,7 +231,7 @@ let addPhoto = (answer_id, url) => {
   let addPhotoQuery = `INSERT INTO photos (answer_id, url) VALUES($1, $2) RETURNING *`;
   let values = [answer_id, url];
 
-  return client.query(addPhotoQuery, values)
+  return pool.query(addPhotoQuery, values)
     .then((addedPhoto) => {
       // console.log('DB POSTED PHOTO', addedPhoto.rows);
       return addedPhoto.rows[0];
@@ -246,7 +246,7 @@ let updateQuestionHelpfulness = (question_id) => {
   let updateQHelpfulnessQuery = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id = $1 RETURNING *`;
   let values = [question_id];
 
-  return client.query(updateQHelpfulnessQuery, values)
+  return pool.query(updateQHelpfulnessQuery, values)
     .then((updatedQ) => {
       // console.log('DB UPDATE Q HELPFULNESS', updatedQ.rows)
       return updatedQ.rows[0];
@@ -261,7 +261,7 @@ let reportQuestion = (question_id) => {
   let reportQuestionQuery = `UPDATE questions SET reported = $1 WHERE question_id = $2 RETURNING *`;
   let values = [true, question_id];
 
-  return client.query(reportQuestionQuery, values)
+  return pool.query(reportQuestionQuery, values)
     .then((reportedQ) => {
       // console.log('DB REPORTED Q SUCCESSFULLY', reportedQ.rows);
       return reportedQ.rows[0];
@@ -276,7 +276,7 @@ let updateAnswerHelpfulness = (answer_id) => {
   let updateAnswerHelpfulnessQuery = `UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id = $1 RETURNING *`;
   let values = [answer_id];
 
-  return client.query(updateAnswerHelpfulnessQuery, values)
+  return pool.query(updateAnswerHelpfulnessQuery, values)
     .then((updatedA) => {
       // console.log('DB UPDATE ANSWER HELPFULNESS', updatedA.rows)
       return updatedA.rows[0];
@@ -291,7 +291,7 @@ let reportAnswer = (answer_id) => {
   let reportAnswerQuery = `UPDATE answers SET reported = $1 WHERE answer_id = $2 RETURNING *`;
   let values = [true, answer_id];
 
-  return client.query(reportAnswerQuery, values)
+  return pool.query(reportAnswerQuery, values)
     .then((reportedA) => {
       // console.log('DB REPORTED ANSWER SUCCESSFULLY', reportedA.rows);
       return reportedA.rows[0];
@@ -302,7 +302,7 @@ let reportAnswer = (answer_id) => {
     });
 }
 
-module.exports.client = client;
+module.exports.pool = pool;
 module.exports.getQuestions = getQuestions;
 module.exports.getAnswers = getAnswers;
 module.exports.addQuestion = addQuestion;
