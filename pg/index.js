@@ -1,4 +1,4 @@
-const { Client } = require('pg');
+const { Client, Pool } = require('pg');
 
 let database;
 let user;
@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
   host = '44.197.129.107';
 }
 
-const client = new Client({
+const client = new Pool({
   database: database,
   user: user,
   password: password,
