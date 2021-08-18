@@ -32,7 +32,10 @@ const client = new Pool({
 console.log('DB env', process.env.NODE_ENV)
 
 client.connect()
-  .then(() => console.log(`CONNECTED TO PG: DATABASE: ${database}`))
+  .then((cl) => {
+    console.log(`CONNECTED TO PG: DATABASE: ${database}`);
+    cl.release();
+  })
   .catch((err) => console.log(`ERROR CONNECTING TO PG: DATABASE ${database}`, err))
 
 let getQuestions = (product_id, offset, limit) => {
