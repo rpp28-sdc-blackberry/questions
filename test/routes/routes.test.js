@@ -4,21 +4,21 @@ const request = supertest(app);
 const db = require('../../pg/index.js');
 
 beforeEach(async () => {
-  await db.client.query(`ALTER SEQUENCE questions_question_id_seq RESTART`);
-  await db.client.query(`ALTER SEQUENCE answers_answer_id_seq RESTART`);
-  await db.client.query(`ALTER SEQUENCE photos_id_seq RESTART`);
+  await db.pool.query(`ALTER SEQUENCE questions_question_id_seq RESTART`);
+  await db.pool.query(`ALTER SEQUENCE answers_answer_id_seq RESTART`);
+  await db.pool.query(`ALTER SEQUENCE photos_id_seq RESTART`);
 
-  await db.client.query(`INSERT INTO questions (product_id, question_body, asker_name, asker_email) VALUES(1, 'test body1', 'test1', 'test1@g.com'),(2, 'test body2', 'test2', 'test2@g.com')`);
-  await db.client.query(`INSERT INTO answers (question_id, body, answerer_name, answerer_email) VALUES(1, 'answer body1', 'answer1', 'answer1@g.com'),(2, 'answer body2', 'answer2', 'answer2@g.com')`);
-  await db.client.query(`INSERT INTO photos (answer_id, url) VALUES(1, 'photo1'), (1, 'photo2'), (1, 'photo3'), (2, 'photo4')`);
+  await db.pool.query(`INSERT INTO questions (product_id, question_body, asker_name, asker_email) VALUES(1, 'test body1', 'test1', 'test1@g.com'),(2, 'test body2', 'test2', 'test2@g.com')`);
+  await db.pool.query(`INSERT INTO answers (question_id, body, answerer_name, answerer_email) VALUES(1, 'answer body1', 'answer1', 'answer1@g.com'),(2, 'answer body2', 'answer2', 'answer2@g.com')`);
+  await db.pool.query(`INSERT INTO photos (answer_id, url) VALUES(1, 'photo1'), (1, 'photo2'), (1, 'photo3'), (2, 'photo4')`);
 })
 
 afterEach(async () => {
-  await db.client.query(`TRUNCATE questions, answers, photos`);
+  await db.pool.query(`TRUNCATE questions, answers, photos`);
 })
 
 afterAll(async () => {
-  await db.client.end();
+  await db.pool.end();
 });
 
 describe('GET questions', () => {

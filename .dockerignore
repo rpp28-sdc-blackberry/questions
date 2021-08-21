@@ -3,3 +3,6 @@ coverage
 mongoose
 k6
 test
+Dockerfile
+docker-compose.yml
+.env
